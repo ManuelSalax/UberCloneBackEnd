@@ -34,12 +34,14 @@ const register = async (req, res) => {
       password: hashedPassword,
       phone,
       gender,
-      language
+      language,
+      role: req.body.role || "PASSENGER"
     });
 
     await user.save();
 
     res.status(201).json({
+      success: true,
       message: "User registered successfully",
       user: {
         id: user._id,
@@ -48,7 +50,8 @@ const register = async (req, res) => {
         phone: user.phone,
         gender: user.gender,
         language: user.language,
-        profileImage: user.profileImage
+        profileImage: user.profileImage,
+        role: user.role
       }
     });
 
@@ -90,7 +93,8 @@ const login = async (req, res) => {
     const token = jwt.sign(
       {
         userId: user._id,
-        email: user.email
+        email: user.email,
+        role: user.role
       },
       process.env.JWT_SECRET,
       {
@@ -99,6 +103,7 @@ const login = async (req, res) => {
     );
 
     res.status(200).json({
+      success: true,
       message: "Login successful",
       token,
       user: {
@@ -108,7 +113,8 @@ const login = async (req, res) => {
         phone: user.phone,
         gender: user.gender,
         language: user.language,
-        profileImage: user.profileImage
+        profileImage: user.profileImage,
+        role: user.role
       }
     });
 

@@ -3,6 +3,8 @@ const express = require("express");
 const router = express.Router();
 
 const authMiddleware = require("../middlewares/authMiddleware");
+const validateRequest = require("../middlewares/validationMiddleware");
+const { profileUpdateValidator } = require("../utils/validators");
 
 const {
   getProfile,
@@ -24,6 +26,8 @@ router.get(
 router.put(
   "/profile",
   authMiddleware,
+  profileUpdateValidator,
+  validateRequest,
   updateProfile
 );
 

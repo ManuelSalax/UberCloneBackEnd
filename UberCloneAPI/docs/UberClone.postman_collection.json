@@ -1,0 +1,627 @@
+{
+  "info": {
+    "_postman_id": "893c52a0-4ff6-4ad2-a38f-a9cb84f676f2",
+    "name": "UberClone API Collection",
+    "description": "Colección completa para pruebas del Backend de UberClone. Incluye flujos de Autenticación, Conductor, Viajes, Mapas, Pagos con Mercado Pago y Administración.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Passenger",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Manuel Lopez\",\n  \"email\": \"manuel@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+573001234567\",\n  \"gender\": \"Male\",\n  \"language\": \"es\",\n  \"role\": \"PASSENGER\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.environment.set(\"token\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"manuel@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Manuel Lopez Editado\",\n  \"phone\": \"+573119876543\",\n  \"gender\": \"Male\",\n  \"language\": \"es\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Drivers",
+      "item": [
+        {
+          "name": "Register as Driver",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehicleBrand\": \"Toyota\",\n  \"vehicleModel\": \"Corolla\",\n  \"vehiclePlate\": \"ABC123\",\n  \"vehicleColor\": \"Negro\",\n  \"vehicleType\": \"Economy\",\n  \"licenseNumber\": \"LIC123456\",\n  \"currentLocation\": {\n    \"latitude\": 4.60971,\n    \"longitude\": -74.08175\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/drivers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "drivers"]
+            }
+          }
+        },
+        {
+          "name": "Get Drivers List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/drivers?isAvailable=true",
+              "host": ["{{base_url}}"],
+              "path": ["api", "drivers"],
+              "query": [
+                {
+                  "key": "isAvailable",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Driver Profile By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/drivers/{{driver_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "drivers", "{{driver_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Driver Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isAvailable\": false,\n  \"currentLocation\": {\n    \"latitude\": 4.61205,\n    \"longitude\": -74.07921\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/drivers/{{driver_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "drivers", "{{driver_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trips",
+      "item": [
+        {
+          "name": "Request Trip",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.trip && jsonData.trip._id) {",
+                  "    pm.environment.set(\"trip_id\", jsonData.trip._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupLocation\": \"Parque de la 93, Bogotá\",\n  \"destinationLocation\": \"Centro Comercial Andino, Bogotá\",\n  \"pickupCoordinates\": {\n    \"latitude\": 4.67678,\n    \"longitude\": -74.04832\n  },\n  \"destinationCoordinates\": {\n    \"latitude\": 4.66723,\n    \"longitude\": -74.05512\n  },\n  \"vehicleType\": \"Economy\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/trips",
+              "host": ["{{base_url}}"],
+              "path": ["api", "trips"]
+            }
+          }
+        },
+        {
+          "name": "Get Trips List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips",
+              "host": ["{{base_url}}"],
+              "path": ["api", "trips"]
+            }
+          }
+        },
+        {
+          "name": "Get User Trip History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips/history",
+              "host": ["{{base_url}}"],
+              "path": ["api", "trips", "history"]
+            }
+          }
+        },
+        {
+          "name": "Get Trip Details by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips/{{trip_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "trips", "{{trip_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Trip Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Accepted\",\n  \"driverId\": \"{{driver_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/trips/{{trip_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "trips", "{{trip_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Trip (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trips/{{trip_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "trips", "{{trip_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Maps Service",
+      "item": [
+        {
+          "name": "Autocomplete Directions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/maps/autocomplete?input=Andino",
+              "host": ["{{base_url}}"],
+              "path": ["api", "maps", "autocomplete"],
+              "query": [
+                {
+                  "key": "input",
+                  "value": "Andino"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Directions Route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/maps/directions?origin=4.6767,-74.0483&destination=4.6672,-74.0551",
+              "host": ["{{base_url}}"],
+              "path": ["api", "maps", "directions"],
+              "query": [
+                {
+                  "key": "origin",
+                  "value": "4.6767,-74.0483"
+                },
+                {
+                  "key": "destination",
+                  "value": "4.6672,-74.0551"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Distance Matrix & Fare Estimate",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/maps/distance?origin=4.676,-74.048&destination=4.667,-74.055&vehicleType=Economy",
+              "host": ["{{base_url}}"],
+              "path": ["api", "maps", "distance"],
+              "query": [
+                {
+                  "key": "origin",
+                  "value": "4.676,-74.048"
+                },
+                {
+                  "key": "destination",
+                  "value": "4.667,-74.055"
+                },
+                {
+                  "key": "vehicleType",
+                  "value": "Economy"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Create Checkout Preference",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.preferenceId) {",
+                  "    pm.environment.set(\"preference_id\", jsonData.preferenceId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": \"{{trip_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/payments/create",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payments", "create"]
+            }
+          }
+        },
+        {
+          "name": "Get Payment Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/{{payment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payments", "{{payment_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Trigger Webhook IPN Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/payments/webhook?type=payment&data.id=mock_pay_12345",
+              "host": ["{{base_url}}"],
+              "path": ["api", "payments", "webhook"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "payment"
+                },
+                {
+                  "key": "data.id",
+                  "value": "mock_pay_12345"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Dashboard",
+      "item": [
+        {
+          "name": "List Users (Admin-Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "users"]
+            }
+          }
+        },
+        {
+          "name": "List Trips (Admin-Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/trips",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "trips"]
+            }
+          }
+        },
+        {
+          "name": "List Payments (Admin-Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/payments",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "payments"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "default"
+    },
+    {
+      "key": "token",
+      "value": "your_jwt_token_here",
+      "type": "default"
+    },
+    {
+      "key": "driver_id",
+      "value": "mongodb_driver_id_here",
+      "type": "default"
+    },
+    {
+      "key": "trip_id",
+      "value": "mongodb_trip_id_here",
+      "type": "default"
+    },
+    {
+      "key": "payment_id",
+      "value": "mongodb_payment_id_here",
+      "type": "default"
+    }
+  ]
+}

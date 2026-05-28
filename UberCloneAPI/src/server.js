@@ -4,19 +4,35 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 
-// Configuración
+// ======================
+// Configuration
+// ======================
+
 dotenv.config();
 
-// Base de datos
+// ======================
+// Database
+// ======================
+
 const connectDB = require("./config/database");
 
-// Rutas
-const authRoutes = require("./routes/authRoutes");
+// ======================
+// Routes
+// ======================
 
-// Conexión MongoDB
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+
+// ======================
+// MongoDB Connection
+// ======================
+
 connectDB();
 
-// Inicialización de Express
+// ======================
+// Express App
+// ======================
+
 const app = express();
 
 // ======================
@@ -29,17 +45,22 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 // ======================
-// Routes
+// Base Route
 // ======================
 
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "UberClone API running successfully",
+    message: "UberClone API running successfully"
   });
 });
 
+// ======================
+// API Routes
+// ======================
+
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 // ======================
 // Server
